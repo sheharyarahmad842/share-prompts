@@ -22,6 +22,7 @@ const Form = ({ type, post, submitting, setPost, handleSubmit }) => {
             className='form_textarea'
             onChange={(e) => setPost({ ...post, prompt: e.target.value })}
             placeholder='Enter prompt...'
+            value={post.prompt}
           />
         </label>
         <label>
@@ -35,6 +36,7 @@ const Form = ({ type, post, submitting, setPost, handleSubmit }) => {
             className='form_input'
             onChange={(e) => setPost({ ...post, tag: e.target.value })}
             placeholder='#Tag'
+            value={post.tag}
           />
         </label>
         <div className='flex-end gap-4 mx-3 mb-5'>
@@ -46,7 +48,11 @@ const Form = ({ type, post, submitting, setPost, handleSubmit }) => {
             disabled={submitting}
             className='px-5 py-1.5 bg-orange-600 rounded-full text-white font-semibold'
           >
-            {submitting ? 'Creating...' : type}
+            {submitting
+              ? type === 'Create'
+                ? 'Creating...'
+                : `${type}ing...`
+              : type}
           </button>
         </div>
       </form>
