@@ -15,6 +15,8 @@ const PromptCardList = ({ data }) => {
 
 const Feed = () => {
   const [searchText, setSearchText] = useState('');
+  const [searchedResults, setSearchedResults] = useState([]);
+  const [searchTimeout, setSearchTimeout] = useState(null);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -31,6 +33,27 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
+  const filterPrompts = (searchText) => {
+    const regex = new RegExp(searchText, 'i');
+    return posts.filter(
+      (item) =>
+        regex.test(item.creator.username) ||
+        regex.test(item.tag) ||
+        regex.test(item.prompt)
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResults(searchResult);
+      }, 500)
+    );
+  };
+
   return (
     <div className='feed'>
       <form className='w-full flex-center'>
@@ -39,11 +62,16 @@ const Feed = () => {
           placeholder='Search for a tag or a username'
           className='search_input peer'
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchChange}
+          required
         />
       </form>
 
-      <PromptCardList data={posts} />
+      {searchText ? (
+        <PromptCardList data={searchedResults} />
+      ) : (
+        <PromptCardList data={posts} />
+      )}
     </div>
   );
 };
