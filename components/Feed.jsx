@@ -3,11 +3,15 @@
 import { useState, useEffect } from 'react';
 import PromptCard from './PromptCard';
 
-const PromptCardList = ({ data }) => {
+const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className='mt-16 prompt_layout'>
       {data.map((post) => (
-        <PromptCard key={post._id} post={post} />
+        <PromptCard
+          key={post._id}
+          post={post}
+          handleTagClick={handleTagClick}
+        />
       ))}
     </div>
   );
@@ -54,6 +58,12 @@ const Feed = () => {
     );
   };
 
+  const handleTagClick = (tag) => {
+    setSearchText(tag);
+    const searchResult = filterPrompts(tag);
+    setSearchedResults(searchResult);
+  };
+
   return (
     <div className='feed'>
       <form className='w-full flex-center'>
@@ -68,9 +78,12 @@ const Feed = () => {
       </form>
 
       {searchText ? (
-        <PromptCardList data={searchedResults} />
+        <PromptCardList
+          data={searchedResults}
+          handleTagClick={handleTagClick}
+        />
       ) : (
-        <PromptCardList data={posts} />
+        <PromptCardList data={posts} handleTagClick={handleTagClick} />
       )}
     </div>
   );
